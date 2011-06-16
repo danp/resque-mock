@@ -68,6 +68,11 @@ You can run jobs asynchronously with `Resque.async`.
 Async jobs are pushed onto a worker queue managed by a manager thread.
 Each job is then started in it's own thread.
 
+## resque-scheduler
+
+`resque-mock` can also mock `resque-scheduler`'s `Resque.enqueue_in` and
+`Resque.enqueue_at` methods.
+
 ## Contributors
 
 Dan Peterson (https://github.com/dpiddy)
