@@ -8,7 +8,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = ['Rakefile'] + Dir['spec/**.rb']
   gem.name          = "resque-mock"
   gem.require_paths = ['lib']
-  gem.version       = '0.1.0'
+  gem.version       = '0.1.1.pre'
 
   gem.add_runtime_dependency     'resque'
   gem.add_development_dependency 'rake'
