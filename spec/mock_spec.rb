@@ -1,9 +1,12 @@
-#require 'spec_helper'
 require 'resque/mock'
 
 Resque.mock!
 
 class Performer
+  def self.queue
+    'performings'
+  end
+
   def self.run?
     !!@args
   end
@@ -41,10 +44,22 @@ class BadPerformer < Performer
   end
 end
 
+class QueuelessPerformer < Performer
+  class << self
+    undef :queue
+  end
+end
+
 describe Resque do
   before { Performer.reset! }
 
   describe "synchronously" do
+    it "ensures the queue can be determined" do
+      expect {
+        Resque.enqueue(QueuelessPerformer, 'hello', 'there')
+      }.to raise_error(Resque::NoQueueError)
+    end
+
     it "performs jobs without delay" do
       Resque.enqueue(Performer, 'hello', 'there')
       Performer.should be_run

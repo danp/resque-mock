@@ -26,6 +26,8 @@ module Resque
     end
 
     def defer(klass, args, delay = nil)
+      validate(klass)
+
       if @async
         add_job('payload' => { 'class' => klass, 'args' => args }, 'delay' => delay)
       else
