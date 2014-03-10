@@ -144,4 +144,11 @@ describe Resque do
       Performer.should_not be_run
     end
   end
+  
+  describe 'discard block form' do
+    it 'does not perform jobs' do
+      Resque.discard { Resque.enqueue(Performer, 'hello', 'there') }
+      Performer.should_not be_run
+    end
+  end
 end

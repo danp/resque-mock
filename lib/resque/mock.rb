@@ -14,6 +14,13 @@ module Resque
       @discard || false
     end
     
+    def discard
+      @discard = true
+      yield
+    ensure
+      @discard = false
+    end
+    
     def async
       @async = true
       create_worker_manager
