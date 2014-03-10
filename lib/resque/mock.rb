@@ -6,13 +6,32 @@ module Resque
   end
 
   module MockExt
+    def discard=(discard)
+      @discard = discard
+    end
+    
+    def discard?
+      @discard || false
+    end
+    
+    def discard
+      @discard = true
+      yield
+    ensure
+      @discard = false
+    end
+    
     def async
       @async = true
       create_worker_manager
       yield
     ensure
-      wait_for_worker_manager
       @async = false
+      wait_for_worker_manager
+    end
+    
+    def async?
+      @async || false
     end
 
     def enqueue(klass, *args)
@@ -27,6 +46,7 @@ module Resque
 
     def defer(klass, args, delay = nil)
       validate(klass)
+      return if discard?
 
       if @async
         add_job('payload' => { 'class' => klass, 'args' => args }, 'delay' => delay)

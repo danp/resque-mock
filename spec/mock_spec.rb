@@ -122,5 +122,33 @@ describe Resque do
     it "raises errors encountered by jobs" do
       expect { Resque.async { Resque.enqueue(BadPerformer, 5) } }.to raise_error
     end
+    
+    it 'clears async flag if errors are raised' do
+      Resque.async?.should be_false
+      expect { Resque.async { Resque.enqueue(BadPerformer, 5) } }.to raise_error
+      Resque.async?.should be_false
+    end
+  end
+  
+  describe 'discard' do
+    before do
+      Resque.discard = true
+    end
+    
+    after do
+      Resque.discard = false
+    end
+    
+    it 'does not perform jobs' do
+      Resque.enqueue(Performer, 'hello', 'there')
+      Performer.should_not be_run
+    end
+  end
+  
+  describe 'discard block form' do
+    it 'does not perform jobs' do
+      Resque.discard { Resque.enqueue(Performer, 'hello', 'there') }
+      Performer.should_not be_run
+    end
   end
 end
