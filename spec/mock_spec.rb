@@ -122,5 +122,11 @@ describe Resque do
     it "raises errors encountered by jobs" do
       expect { Resque.async { Resque.enqueue(BadPerformer, 5) } }.to raise_error
     end
+    
+    it 'clears async flag if errors are raised' do
+      Resque.async?.should be_false
+      expect { Resque.async { Resque.enqueue(BadPerformer, 5) } }.to raise_error
+      Resque.async?.should be_false
+    end
   end
 end

@@ -11,8 +11,12 @@ module Resque
       create_worker_manager
       yield
     ensure
-      wait_for_worker_manager
       @async = false
+      wait_for_worker_manager
+    end
+    
+    def async?
+      @async || false
     end
 
     def enqueue(klass, *args)
